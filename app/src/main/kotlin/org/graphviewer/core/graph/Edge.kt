@@ -1,4 +1,4 @@
-package org.graphviewer.core
+package org.graphviewer.core.graph
 
 interface Edge {
     fun nextVertex(): Vertex
