@@ -84,7 +84,7 @@ class UMLGuiApp : JFrame("Graph Editor") {
         }
 
         // Generate the PlantUML image
-        generatePlantUMLImage(GraphImpl.toPlantUml(graph.dump()))
+        generatePlantUMLImage(GraphImpl.toPlantUml(graph))
 
         // Refresh the UI
         vertexButtonsPanel.revalidate()
@@ -116,7 +116,7 @@ class UMLGuiApp : JFrame("Graph Editor") {
                 button.text = "$vertexId (Enabled)"
                 graph.enableVertex(vertex)
             }
-            generatePlantUMLImage(GraphImpl.toPlantUml(graph.dump()))
+            generatePlantUMLImage(GraphImpl.toPlantUml(graph))
         }
         vertexButtons[vertexId] = button
 
