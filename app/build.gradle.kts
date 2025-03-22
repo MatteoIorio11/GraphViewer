@@ -23,13 +23,14 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
     implementation("net.sourceforge.plantuml:plantuml:1.2021.9")
-    // Use the JUnit 5 integration.
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
     testImplementation(libs.junit.jupiter.engine)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // This dependency is used by the application.
     implementation(libs.guava)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
