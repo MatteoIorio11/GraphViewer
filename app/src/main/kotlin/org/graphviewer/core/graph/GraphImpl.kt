@@ -52,6 +52,8 @@ class GraphImpl : Graph {
 
     override fun vertexs(): Set<Vertex> = adjacentList.keys + adjacentList.values.flatten().map { it.nextVertex() }
 
+    override fun isVertexEnabled(v: Vertex): Boolean = !disabledVertices.contains(v)
+
     override fun addEdge(
         v1: Vertex,
         v2: Vertex,
