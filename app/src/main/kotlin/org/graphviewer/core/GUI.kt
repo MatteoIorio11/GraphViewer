@@ -24,7 +24,7 @@ import javax.imageio.ImageIO
 import javax.swing.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class UMLGuiApp : JFrame("Graph Editor") {
+class GUIApp : JFrame("Graph Editor") {
     private val imageLabel = JLabel() // Label to display the UML image
     private val textArea = JTextArea(10, 30) // Text input area for UML code
     private val vertexButtonsPanel = JPanel() // Changed to use a panel with GridLayout instead of JList
@@ -43,12 +43,15 @@ class UMLGuiApp : JFrame("Graph Editor") {
         val imagePanel = JPanel(BorderLayout())
         imagePanel.background = Color.LIGHT_GRAY
         imagePanel.add(imageLabel, BorderLayout.CENTER)
+
         add(imagePanel, BorderLayout.CENTER) // Set in the middle
 
         // 📌 2. TEXT INPUT AREA (BOTTOM LEFT)
         val inputPanel = JPanel(BorderLayout())
         inputPanel.border = BorderFactory.createTitledBorder("Enter Graph Code (Node -> Node)")
         inputPanel.add(JScrollPane(textArea), BorderLayout.CENTER)
+        imageLabel.setHorizontalAlignment(JLabel.CENTER)
+        imageLabel.setVerticalAlignment(JLabel.CENTER)
         inputPanel.add(renderButton, BorderLayout.SOUTH) // Button to generate UML
         add(inputPanel, BorderLayout.SOUTH)
 
@@ -74,7 +77,7 @@ class UMLGuiApp : JFrame("Graph Editor") {
                 override fun keyReleased(e: KeyEvent?) {
                     if (e!!.keyCode == KeyEvent.VK_ENTER) {
                         generateUMLImage()
-                    } else if (e!!.keyCode == KeyEvent.VK_BACK_SPACE) {
+                    } else if (e.keyCode == KeyEvent.VK_BACK_SPACE) {
                         val deferred = GraphImpl.isValidFormat(textArea.text.split("\n"))
                         deferred.invokeOnCompletion {
                             if (deferred.getCompleted()) {
@@ -156,5 +159,5 @@ class UMLGuiApp : JFrame("Graph Editor") {
 }
 
 fun main() {
-    SwingUtilities.invokeLater { UMLGuiApp() }
+    SwingUtilities.invokeLater { GUIApp() }
 }
