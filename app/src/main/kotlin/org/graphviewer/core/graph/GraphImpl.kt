@@ -14,8 +14,9 @@ class GraphImpl : Graph {
             return graph
         }
 
-        fun toPlantUml(adjacentList: Map<Vertex, List<Edge>>): String {
+        fun toPlantUml(graph: Graph): String {
             val stringBuilder = StringBuilder()
+            val adjacentList = graph.dump()
             stringBuilder.append("@startuml\n")
             adjacentList.keys.forEach { stringBuilder.append("class ${it.getId()}\n") }
             for (key in adjacentList.keys) {
