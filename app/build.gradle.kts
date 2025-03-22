@@ -44,6 +44,11 @@ application {
     mainClass = "org.graphviewer.AppKt"
 }
 
+tasks.register<JavaExec>("runGui") {
+    mainClass = "org.graphviewer.core.GUIKt"
+    classpath = sourceSets["main"].runtimeClasspath
+}
+
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
