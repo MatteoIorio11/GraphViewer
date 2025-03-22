@@ -12,8 +12,10 @@
 package org.graphviewer.core
 
 import net.sourceforge.plantuml.SourceStringReader
+import org.graphviewer.core.graph.Graph
+import org.graphviewer.core.graph.GraphImpl
+import org.graphviewer.core.graph.VertexImpl
 import java.awt.*
-import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 import javax.swing.*
@@ -21,9 +23,12 @@ import javax.swing.*
 class UMLGuiApp : JFrame("Graph Editor") {
     private val imageLabel = JLabel() // Label to display the UML image
     private val textArea = JTextArea(10, 30) // Text input area for UML code
-    private val buttonListModel = DefaultListModel<JButton>() // Dynamic list model for buttons
-    private val buttonList = JList(buttonListModel) // JList to hold buttons dynamically
+    private val vertexButtonsPanel = JPanel() // Changed to use a panel with GridLayout instead of JList
     private val renderButton = JButton("Render Graph") // Button to generate UML image
+    private var graph: Graph = GraphImpl()
+
+    // Map to store buttons by vertex ID
+    private val vertexButtons = mutableMapOf<String, JButton>()
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -45,23 +50,15 @@ class UMLGuiApp : JFrame("Graph Editor") {
 
         // 📌 3. DYNAMIC BUTTON LIST (RIGHT SIDE)
         val buttonListPanel = JPanel(BorderLayout())
-        buttonListPanel.border = BorderFactory.createTitledBorder("Vertexs")
-        buttonList.fixedCellHeight = 40
-        buttonList.cellRenderer = ButtonListRenderer()
-        buttonList.addListSelectionListener { e ->
-            if (!e.valueIsAdjusting) {
-                buttonList.selectedValue?.doClick()
-            }
-        }
-        buttonListPanel.add(JScrollPane(buttonList), BorderLayout.CENTER)
+        buttonListPanel.border = BorderFactory.createTitledBorder("Vertices")
+
+        // Using a panel with a vertical BoxLayout for buttons instead of JList
+        vertexButtonsPanel.layout = BoxLayout(vertexButtonsPanel, BoxLayout.Y_AXIS)
+        buttonListPanel.add(JScrollPane(vertexButtonsPanel), BorderLayout.CENTER)
         add(buttonListPanel, BorderLayout.EAST)
 
         // 📌 BUTTON ACTIONS
         renderButton.addActionListener { generateUMLImage() }
-
-        // Add some dynamic buttons
-//        addDynamicButton("Example 1") { textArea.text = exampleUML }
-//        addDynamicButton("Example 2") { textArea.text = exampleUML2 }
 
         pack()
         setLocationRelativeTo(null)
@@ -70,71 +67,62 @@ class UMLGuiApp : JFrame("Graph Editor") {
 
     // 🎨 FUNCTION TO GENERATE UML IMAGE FROM TEXT INPUT
     private fun generateUMLImage() {
-        val umlCode = textArea.text.trim()
-        if (umlCode.isEmpty()) {
+        val graphCode = textArea.text.trim()
+        if (graphCode.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter Graph code!", "Error", JOptionPane.ERROR_MESSAGE)
             return
         }
-        val image = generatePlantUMLImage(umlCode)
-        imageLabel.icon = ImageIcon(image) // Display generated UML image
+        graph = GraphImpl.create(graphCode.split("\n"))
+
+        // Clear existing buttons
+        vertexButtonsPanel.removeAll()
+        vertexButtons.clear()
+
+        // Add new buttons for each vertex
+        graph.vertexs().forEach { vertex ->
+            addVertexButton(vertex.getId())
+        }
+
+        // Generate the PlantUML image
+        generatePlantUMLImage(GraphImpl.toPlantUml(graph.dump()))
+
+        // Refresh the UI
+        vertexButtonsPanel.revalidate()
+        vertexButtonsPanel.repaint()
         pack() // Resize window to fit image
     }
 
     // 🖼️ FUNCTION TO GENERATE UML IMAGE IN MEMORY
-    private fun generatePlantUMLImage(umlString: String): BufferedImage {
+    private fun generatePlantUMLImage(umlString: String) {
         val reader = SourceStringReader(umlString)
         val outputStream = ByteArrayOutputStream()
         reader.outputImage(outputStream).description // Generates image in memory
-        return ImageIO.read(outputStream.toByteArray().inputStream())!!
+        imageLabel.icon = ImageIcon(ImageIO.read(outputStream.toByteArray().inputStream())!!)
     }
 
-    // 🔄 FUNCTION TO ADD A DYNAMIC BUTTON
-    private fun addDynamicButton(
-        name: String,
-        action: () -> Unit,
-    ) {
-        val button = JButton(name)
-        button.addActionListener { action() }
-        buttonListModel.addElement(button)
+    // 🔄 FUNCTION TO ADD A VERTEX BUTTON
+    private fun addVertexButton(vertexId: String) {
+        val button = JButton("$vertexId (Enabled)")
+        button.preferredSize = Dimension(150, 40)
+        button.maximumSize = Dimension(Short.MAX_VALUE.toInt(), 40)
+        button.alignmentX = Component.CENTER_ALIGNMENT
+
+        button.addActionListener {
+            val vertex = VertexImpl(vertexId)
+            if (graph.isVertexEnabled(vertex)) {
+                button.text = "$vertexId (Disabled)"
+                graph.disableVertex(vertex)
+            } else {
+                button.text = "$vertexId (Enabled)"
+                graph.enableVertex(vertex)
+            }
+            generatePlantUMLImage(GraphImpl.toPlantUml(graph.dump()))
+        }
+        vertexButtons[vertexId] = button
+
+        vertexButtonsPanel.add(button)
+        vertexButtonsPanel.add(Box.createRigidArea(Dimension(0, 5))) // Add spacing between buttons
     }
-
-    // 📌 BUTTON LIST RENDERER: Makes buttons inside JList
-    class ButtonListRenderer : ListCellRenderer<JButton> {
-        override fun getListCellRendererComponent(
-            list: JList<out JButton>,
-            value: JButton,
-            index: Int,
-            isSelected: Boolean,
-            cellHasFocus: Boolean,
-        ): Component {
-            value.background = if (isSelected) Color.LIGHT_GRAY else Color.WHITE
-            return value
-        }
-    }
-
-    private val exampleUML =
-        """
-        @startuml
-        class Person {
-            +name: String
-            +age: Int
-            +greet(): String
-        }
-        class Student {
-            +studentId: Int
-        }
-        Person <|-- Student
-        @enduml
-        """.trimIndent()
-
-    private val exampleUML2 =
-        """
-        @startuml
-        Alice --> Bob
-        Bob --> Charlie
-        Charlie --> Alice
-        @enduml
-        """.trimIndent()
 }
 
 fun main() {
