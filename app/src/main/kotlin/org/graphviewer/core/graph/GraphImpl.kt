@@ -2,7 +2,7 @@ package org.graphviewer.core.graph
 
 class GraphImpl : Graph {
     companion object {
-        fun create(edges: List<String>): Graph {
+        fun create(edges: List<String> = listOf()): Graph {
             val graph = GraphImpl()
             edges.forEach { line ->
                 val (v1, v2) = line.split("->")
@@ -24,7 +24,14 @@ class GraphImpl : Graph {
     }
 
     override fun dump(): Map<Vertex, List<Edge>> {
-        TODO("Not yet implemented")
+        val result = mutableMapOf<Vertex, MutableList<Edge>>()
+        adjacentList.keys
+            .filter { !disabledVertices.contains(it) }
+            .forEach {
+                result[it] =
+                    adjacentList[it]?.filter { e -> !disabledVertices.contains(e.nextVertex()) }?.toMutableList()!!
+            }
+        return result
     }
 
     override fun addEdge(
