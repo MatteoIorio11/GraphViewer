@@ -1,5 +1,10 @@
 package org.graphviewer.core.graph
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+
 class GraphImpl : Graph {
     companion object {
         fun create(edges: List<String> = listOf()): Graph {
@@ -13,6 +18,13 @@ class GraphImpl : Graph {
             }
             return graph
         }
+
+        fun isValidFormat(lines: List<String>): Deferred<Boolean> =
+            CoroutineScope(Dispatchers.IO).async {
+                lines
+                    .map { it -> it.trim() }
+                    .all { it.contains("->") && it.split("->").all { char -> char.isNotBlank() } }
+            }
 
         fun toPlantUml(graph: Graph): String {
             val stringBuilder = StringBuilder()
