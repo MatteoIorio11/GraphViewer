@@ -37,7 +37,16 @@ class GraphImpl : Graph {
         return result
     }
 
-    override fun vertexs(): Set<Vertex> = adjacentList.keys
+    override fun vertexs(): Set<Vertex> {
+        val values: MutableSet<Vertex> = mutableSetOf()
+        for (key in adjacentList.keys) {
+            values.add(key)
+            for (edge in adjacentList[key]!!) {
+                values.add(edge.nextVertex())
+            }
+        }
+        return values
+    }
 
     override fun addEdge(
         v1: Vertex,
