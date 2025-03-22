@@ -11,6 +11,7 @@
 
 package org.graphviewer.core
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import net.sourceforge.plantuml.SourceStringReader
 import org.graphviewer.core.graph.Graph
 import org.graphviewer.core.graph.GraphImpl
@@ -22,6 +23,7 @@ import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 import javax.swing.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class UMLGuiApp : JFrame("Graph Editor") {
     private val imageLabel = JLabel() // Label to display the UML image
     private val textArea = JTextArea(10, 30) // Text input area for UML code
@@ -72,6 +74,17 @@ class UMLGuiApp : JFrame("Graph Editor") {
                 override fun keyReleased(e: KeyEvent?) {
                     if (e!!.keyCode == KeyEvent.VK_ENTER) {
                         generateUMLImage()
+                    } else if (e!!.keyCode == KeyEvent.VK_BACK_SPACE) {
+                        val deferred = GraphImpl.isValidFormat(textArea.text.split("\n"))
+                        deferred.invokeOnCompletion {
+                            if (deferred.getCompleted()) {
+                                generateUMLImage()
+                            } else if (textArea.text.isEmpty()) {
+                                imageLabel.icon = null
+                                vertexButtonsPanel.removeAll()
+                                vertexButtons.clear()
+                            }
+                        }
                     }
                 }
             },
@@ -84,6 +97,7 @@ class UMLGuiApp : JFrame("Graph Editor") {
     // 🎨 FUNCTION TO GENERATE UML IMAGE FROM TEXT INPUT
     private fun generateUMLImage() {
         val graphCode = textArea.text.trim()
+        println(graphCode)
         if (graphCode.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter Graph code!", "Error", JOptionPane.ERROR_MESSAGE)
             return
