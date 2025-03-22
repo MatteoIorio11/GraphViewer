@@ -18,7 +18,15 @@ class GraphImpl : Graph {
             val stringBuilder = StringBuilder()
             val adjacentList = graph.dump()
             stringBuilder.append("@startuml\n")
-            adjacentList.keys.forEach { stringBuilder.append("class ${it.getId()}\n") }
+            val classes =
+                (
+                    adjacentList.values
+                        .flatten()
+                        .map { it -> it.nextVertex() }
+                        .toSet() +
+                        adjacentList.keys
+                ).toList().sortedBy { it -> it.getId() }
+            classes.forEach { stringBuilder.append("class ${it.getId()}\n") }
             for (key in adjacentList.keys) {
                 for (edge in adjacentList[key]!!) {
                     stringBuilder.append("${key.getId()} --> ${edge.nextVertex().getId()}\n")
