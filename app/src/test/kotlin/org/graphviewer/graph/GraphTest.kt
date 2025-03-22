@@ -5,6 +5,7 @@ import org.graphviewer.core.graph.GraphImpl
 import org.graphviewer.core.graph.VertexImpl
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class GraphTest :
     DescribeSpec({
@@ -33,9 +34,14 @@ class GraphTest :
             val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D", "D->A", "D->E"))
             assertEquals(5, graph.vertexs().size)
         }
-        describe("Givin as input a list of edges, If we disable a vertex, It should be present in the list of all vertexs") {
+        describe("Giving as input a list of edges, If we disable a vertex, It should be present in the list of all vertexs") {
             val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D", "D->A", "D->E"))
             graph.disableVertex(VertexImpl("A"))
             assertEquals(5, graph.vertexs().size)
+        }
+        describe("Giving as input a list of edges, If we disable a vertex, It should return false when ask If enable") {
+            val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D"))
+            graph.disableVertex(VertexImpl("A"))
+            assertFalse { graph.isVertexEnabled(VertexImpl("A")) }
         }
     })
