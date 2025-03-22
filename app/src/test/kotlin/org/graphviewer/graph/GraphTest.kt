@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import org.graphviewer.core.graph.GraphImpl
 import org.graphviewer.core.graph.VertexImpl
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertEquals
 
 class GraphTest :
     DescribeSpec({
@@ -19,6 +20,13 @@ class GraphTest :
         describe("Given as input a list of edges, If we disable a vertex, It should not be present in the dump") {
             val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D", "D->A"))
             graph.disableVertex(VertexImpl("A"))
-            assert(graph.dump().size == 3)
+            assertEquals(3, graph.dump().size)
+        }
+        describe("Given as input a list of edges, If we disable a vertex and the we enable It we should see It in the dump") {
+            val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D", "D->A"))
+            graph.disableVertex(VertexImpl("A"))
+            assertEquals(3, graph.dump().size)
+            graph.enableVertex(VertexImpl("A"))
+            assertEquals(4, graph.dump().size)
         }
     })
