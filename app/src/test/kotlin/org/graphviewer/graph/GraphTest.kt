@@ -29,4 +29,8 @@ class GraphTest :
             graph.enableVertex(VertexImpl("A"))
             assertEquals(4, graph.dump().size)
         }
+        describe("Giving as input a list of edges It should be possible to get the list of all vertexs") {
+            val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D", "D->A", "D->E"))
+            assertEquals(5, graph.vertexs().size)
+        }
     })
