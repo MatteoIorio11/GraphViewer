@@ -9,7 +9,7 @@ class GraphImpl : Graph {
                     throw IllegalArgumentException("Invalid edge format")
                 }
                 val (v1, v2) = line.split("->")
-                graph.addEdge(VertexImpl(v1), VertexImpl(v2))
+                graph.addEdge(VertexImpl(v1.trim()), VertexImpl(v2.trim()))
             }
             return graph
         }
