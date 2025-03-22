@@ -9,6 +9,8 @@ interface Graph {
 
     fun vertexs(): Set<Vertex>
 
+    fun isVertexEnabled(v: Vertex): Boolean
+
     fun addEdge(
         v1: Vertex,
         v2: Vertex,
