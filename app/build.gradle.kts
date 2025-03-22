@@ -22,7 +22,7 @@ dependencies {
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
-
+    implementation("net.sourceforge.plantuml:plantuml:1.2021.9")
     // Use the JUnit 5 integration.
     testImplementation(libs.junit.jupiter.engine)
 
@@ -41,7 +41,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.AppKt"
+    mainClass = "org.graphviewer.AppKt"
 }
 
 tasks.named<Test>("test") {
