@@ -7,6 +7,8 @@ interface Graph {
 
     fun dump(): Map<Vertex, List<Edge>>
 
+    fun vertexs(): Set<Vertex>
+
     fun addEdge(
         v1: Vertex,
         v2: Vertex,

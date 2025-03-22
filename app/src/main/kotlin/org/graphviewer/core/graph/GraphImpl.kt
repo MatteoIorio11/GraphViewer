@@ -37,6 +37,8 @@ class GraphImpl : Graph {
         return result
     }
 
+    override fun vertexs(): Set<Vertex> = adjacentList.keys
+
     override fun addEdge(
         v1: Vertex,
         v2: Vertex,
