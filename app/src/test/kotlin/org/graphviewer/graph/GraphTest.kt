@@ -44,4 +44,18 @@ class GraphTest :
             graph.disableVertex(VertexImpl("A"))
             assertFalse { graph.isVertexEnabled(VertexImpl("A")) }
         }
+        describe("Giving a graph It should be possible to dump it into plant uml format") {
+            val expected =
+                """
+                @startuml
+                class a
+                class b
+                class c
+                a --> b
+                b --> c
+                @enduml
+                """.trimIndent()
+            val graph = GraphImpl.create(listOf("a->b", "b->c"))
+            assertEquals(expected, GraphImpl.toPlantUml(graph))
+        }
     })
