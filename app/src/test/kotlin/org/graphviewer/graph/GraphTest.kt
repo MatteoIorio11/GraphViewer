@@ -33,4 +33,9 @@ class GraphTest :
             val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D", "D->A", "D->E"))
             assertEquals(5, graph.vertexs().size)
         }
+        describe("Givin as input a list of edges, If we disable a vertex, It should be present in the list of all vertexs") {
+            val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D", "D->A", "D->E"))
+            graph.disableVertex(VertexImpl("A"))
+            assertEquals(5, graph.vertexs().size)
+        }
     })
