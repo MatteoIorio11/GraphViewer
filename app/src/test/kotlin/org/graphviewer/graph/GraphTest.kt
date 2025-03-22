@@ -2,6 +2,7 @@ package org.graphviewer.graph
 
 import io.kotest.core.spec.style.DescribeSpec
 import org.graphviewer.core.graph.GraphImpl
+import org.graphviewer.core.graph.VertexImpl
 import org.junit.jupiter.api.assertThrows
 
 class GraphTest :
@@ -14,5 +15,10 @@ class GraphTest :
             assertThrows<java.lang.IllegalArgumentException> {
                 GraphImpl.create(listOf("A->B", "B"))
             }
+        }
+        describe("Given as input a list of edges, If we disable a vertex, It should not be present in the dump") {
+            val graph = GraphImpl.create(listOf("A->B", "B->C", "C->D", "D->A"))
+            graph.disableVertex(VertexImpl("A"))
+            assert(graph.dump().size == 3)
         }
     })
