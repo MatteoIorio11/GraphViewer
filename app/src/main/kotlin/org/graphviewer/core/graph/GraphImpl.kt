@@ -13,6 +13,19 @@ class GraphImpl : Graph {
             }
             return graph
         }
+
+        fun toPlantUml(adjacentList: Map<Vertex, List<Edge>>): String {
+            val stringBuilder = StringBuilder()
+            stringBuilder.append("@startuml\n")
+            adjacentList.keys.forEach { stringBuilder.append("class ${it.getId()}\n") }
+            for (key in adjacentList.keys) {
+                for (edge in adjacentList[key]!!) {
+                    stringBuilder.append("${key.getId()} --> ${edge.nextVertex().getId()}\n")
+                }
+            }
+            stringBuilder.append("@enduml")
+            return stringBuilder.toString()
+        }
     }
 
     private val adjacentList = mutableMapOf<Vertex, MutableList<Edge>>()
