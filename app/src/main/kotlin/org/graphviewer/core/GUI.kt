@@ -16,6 +16,8 @@ import org.graphviewer.core.graph.Graph
 import org.graphviewer.core.graph.GraphImpl
 import org.graphviewer.core.graph.VertexImpl
 import java.awt.*
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 import javax.swing.*
@@ -59,7 +61,21 @@ class UMLGuiApp : JFrame("Graph Editor") {
 
         // 📌 BUTTON ACTIONS
         renderButton.addActionListener { generateUMLImage() }
+        textArea.addKeyListener(
+            object : KeyListener {
+                override fun keyTyped(e: KeyEvent?) {
+                }
 
+                override fun keyPressed(e: KeyEvent?) {
+                }
+
+                override fun keyReleased(e: KeyEvent?) {
+                    if (e!!.keyCode == KeyEvent.VK_ENTER) {
+                        generateUMLImage()
+                    }
+                }
+            },
+        )
         pack()
         setLocationRelativeTo(null)
         isVisible = true
