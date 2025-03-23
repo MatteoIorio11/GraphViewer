@@ -4,10 +4,18 @@
 [versions]
 guava = "33.3.1-jre"
 junit-jupiter-engine = "5.11.1"
+kotest-runner-junit5 = "5.9.1"
+plantuml = "1.2021.9"
+kotlinx-coroutines-core = "1.10.1"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter-engine" }
+kotest-runner-junit5 = {module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest-runner-junit5"}
+plantuml = { module = "net.sourceforge.plantuml:plantuml", version.ref = "plantuml" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5"}
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher"}
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.0.21" }
