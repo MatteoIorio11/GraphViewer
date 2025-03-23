@@ -65,51 +65,47 @@ class GUIApp : JFrame("Graph Editor") {
         buttonListPanel.add(JScrollPane(vertexButtonsPanel), BorderLayout.CENTER)
         add(buttonListPanel, BorderLayout.EAST)
 
-        imagePanel.addMouseWheelListener(
-            object : MouseWheelListener {
-                override fun mouseWheelMoved(e: MouseWheelEvent?) {
-                    val notches = e!!.wheelRotation
-                    val temp = (zoom - notches * 0.1).coerceAtLeast(0.5) // Limit min zoom
-                    if (temp != zoom) {
-                        zoom = temp
-                        resizeImage()
-                    }
-                }
-            },
-        )
+        imagePanel.addMouseWheelListener { e ->
+            val notches = e!!.wheelRotation
+            val temp = (zoom - notches * 0.1).coerceAtLeast(0.5) // Limit min zoom
+            if (temp != zoom) {
+                zoom = temp
+                resizeImage()
+            }
+        }
 
-        // 📌 BUTTON ACTIONS
         renderButton.addActionListener { generateUMLImage() }
-        textArea.addKeyListener(
-            object : KeyListener {
-                override fun keyTyped(e: KeyEvent?) {
-                }
-
-                override fun keyPressed(e: KeyEvent?) {
-                }
-
-                override fun keyReleased(e: KeyEvent?) {
-                    if (e!!.keyCode == KeyEvent.VK_ENTER) {
-                        generateUMLImage()
-                    } else if (e.keyCode == KeyEvent.VK_BACK_SPACE) {
-                        val deferred = GraphImpl.isValidFormat(textArea.text.split("\n"))
-                        deferred.invokeOnCompletion {
-                            if (deferred.getCompleted()) {
-                                generateUMLImage()
-                            } else if (textArea.text.isEmpty()) {
-                                imageLabel.icon = null
-                                vertexButtonsPanel.removeAll()
-                                vertexButtons.clear()
-                            }
-                        }
-                    }
-                }
-            },
-        )
+        textArea.addKeyListener(textAreaHandler())
         pack()
         setLocationRelativeTo(null)
         isVisible = true
     }
+
+    private fun textAreaHandler(): KeyListener =
+        object : KeyListener {
+            override fun keyTyped(e: KeyEvent?) {
+            }
+
+            override fun keyPressed(e: KeyEvent?) {
+            }
+
+            override fun keyReleased(e: KeyEvent?) {
+                if (e!!.keyCode == KeyEvent.VK_ENTER) {
+                    generateUMLImage()
+                } else if (e.keyCode == KeyEvent.VK_BACK_SPACE) {
+                    val deferred = GraphImpl.isValidFormat(textArea.text.split("\n"))
+                    deferred.invokeOnCompletion {
+                        if (deferred.getCompleted()) {
+                            generateUMLImage()
+                        } else if (textArea.text.isEmpty()) {
+                            imageLabel.icon = null
+                            vertexButtonsPanel.removeAll()
+                            vertexButtons.clear()
+                        }
+                    }
+                }
+            }
+        }
 
     // 🎨 FUNCTION TO GENERATE UML IMAGE FROM TEXT INPUT
     private fun generateUMLImage() {
@@ -145,7 +141,7 @@ class GUIApp : JFrame("Graph Editor") {
         val outputStream = ByteArrayOutputStream()
         reader.outputImage(outputStream).description // Generates image in memory
         imageLabel.icon = ImageIcon(ImageIO.read(outputStream.toByteArray().inputStream())!!)
-        originalImage = ImageIcon(ImageIO.read(outputStream.toByteArray().inputStream())!!).image
+        originalImage = (imageLabel.icon as ImageIcon).image
     }
 
     // 🔄 FUNCTION TO ADD A VERTEX BUTTON
@@ -178,7 +174,7 @@ class GUIApp : JFrame("Graph Editor") {
             val newHeight = (it.getHeight(null) * zoom).toInt()
             val resizedImage = it.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH)
             imageLabel.icon = ImageIcon(resizedImage)
-            imageLabel.revalidate() // Refresh UI
+            imageLabel.revalidate()
             imageLabel.repaint()
         }
     }
