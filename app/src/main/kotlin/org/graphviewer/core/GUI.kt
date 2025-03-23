@@ -17,8 +17,7 @@ import org.graphviewer.core.graph.Graph
 import org.graphviewer.core.graph.GraphImpl
 import org.graphviewer.core.graph.VertexImpl
 import java.awt.*
-import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
+import java.awt.event.*
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 import javax.swing.*
@@ -30,6 +29,8 @@ class GUIApp : JFrame("Graph Editor") {
     private val vertexButtonsPanel = JPanel() // Changed to use a panel with GridLayout instead of JList
     private val renderButton = JButton("Render Graph") // Button to generate UML image
     private var graph: Graph = GraphImpl()
+    private var zoom = 1.0
+    private var originalImage: Image? = null
 
     // Map to store buttons by vertex ID
     private val vertexButtons = mutableMapOf<String, JButton>()
@@ -63,6 +64,19 @@ class GUIApp : JFrame("Graph Editor") {
         vertexButtonsPanel.layout = BoxLayout(vertexButtonsPanel, BoxLayout.Y_AXIS)
         buttonListPanel.add(JScrollPane(vertexButtonsPanel), BorderLayout.CENTER)
         add(buttonListPanel, BorderLayout.EAST)
+
+        imagePanel.addMouseWheelListener(
+            object : MouseWheelListener {
+                override fun mouseWheelMoved(e: MouseWheelEvent?) {
+                    val notches = e!!.wheelRotation
+                    val temp = (zoom - notches * 0.1).coerceAtLeast(0.5) // Limit min zoom
+                    if (temp != zoom) {
+                        zoom = temp
+                        resizeImage()
+                    }
+                }
+            },
+        )
 
         // 📌 BUTTON ACTIONS
         renderButton.addActionListener { generateUMLImage() }
@@ -131,6 +145,7 @@ class GUIApp : JFrame("Graph Editor") {
         val outputStream = ByteArrayOutputStream()
         reader.outputImage(outputStream).description // Generates image in memory
         imageLabel.icon = ImageIcon(ImageIO.read(outputStream.toByteArray().inputStream())!!)
+        originalImage = ImageIcon(ImageIO.read(outputStream.toByteArray().inputStream())!!).image
     }
 
     // 🔄 FUNCTION TO ADD A VERTEX BUTTON
@@ -155,6 +170,17 @@ class GUIApp : JFrame("Graph Editor") {
 
         vertexButtonsPanel.add(button)
         vertexButtonsPanel.add(Box.createRigidArea(Dimension(0, 5))) // Add spacing between buttons
+    }
+
+    private fun resizeImage() {
+        originalImage?.let {
+            val newWidth = (it.getWidth(null) * zoom).toInt()
+            val newHeight = (it.getHeight(null) * zoom).toInt()
+            val resizedImage = it.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH)
+            imageLabel.icon = ImageIcon(resizedImage)
+            imageLabel.revalidate() // Refresh UI
+            imageLabel.repaint()
+        }
     }
 }
 
