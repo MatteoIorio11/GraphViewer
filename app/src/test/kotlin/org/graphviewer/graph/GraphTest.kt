@@ -78,4 +78,16 @@ class GraphTest :
                 assertTrue { validation.getCompleted() }
             }
         }
+        describe("Given as input a list of edges that It is not well formatted, the validation check should return false") {
+            val validation = GraphImpl.isValidFormat(listOf("a->b", "b"))
+            validation.invokeOnCompletion {
+                assertFalse { validation.getCompleted() }
+            }
+        }
+        describe("Given as input an empty list of edges, the validation check should return false") {
+            val validation = GraphImpl.isValidFormat(listOf())
+            validation.invokeOnCompletion {
+                assertFalse { validation.getCompleted() }
+            }
+        }
     })
