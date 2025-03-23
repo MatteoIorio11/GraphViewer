@@ -21,9 +21,10 @@ class GraphImpl : Graph {
 
         fun isValidFormat(lines: List<String>): Deferred<Boolean> =
             CoroutineScope(Dispatchers.IO).async {
-                lines
-                    .map { it -> it.trim() }
-                    .all { it.contains("->") && it.split("->").all { char -> char.isNotBlank() } }
+                lines.isNotEmpty() &&
+                    lines
+                        .map { it -> it.trim() }
+                        .all { it.contains("->") && it.split("->").all { char -> char.isNotBlank() } }
             }
 
         fun toPlantUml(graph: Graph): String {
