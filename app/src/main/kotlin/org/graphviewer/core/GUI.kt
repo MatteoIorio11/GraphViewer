@@ -101,6 +101,7 @@ class GUIApp : JFrame("Graph Editor") {
                             imageLabel.icon = null
                             vertexButtonsPanel.removeAll()
                             vertexButtons.clear()
+                            originalImage = null
                         }
                     }
                 }
@@ -110,7 +111,6 @@ class GUIApp : JFrame("Graph Editor") {
     // 🎨 FUNCTION TO GENERATE UML IMAGE FROM TEXT INPUT
     private fun generateUMLImage() {
         val graphCode = textArea.text.trim()
-        println(graphCode)
         if (graphCode.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter Graph code!", "Error", JOptionPane.ERROR_MESSAGE)
             return
