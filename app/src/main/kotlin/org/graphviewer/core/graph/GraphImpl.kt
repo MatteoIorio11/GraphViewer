@@ -1,10 +1,5 @@
 package org.graphviewer.core.graph
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-
 class GraphImpl : Graph {
     companion object {
         fun create(edges: List<String> = listOf()): Graph {
@@ -17,36 +12,6 @@ class GraphImpl : Graph {
                 graph.addEdge(VertexImpl(v1.trim()), VertexImpl(v2.trim()))
             }
             return graph
-        }
-
-        fun isValidFormat(lines: List<String>): Deferred<Boolean> =
-            CoroutineScope(Dispatchers.IO).async {
-                lines.isNotEmpty() &&
-                    lines
-                        .map { it -> it.trim() }
-                        .all { it.contains("->") && it.split("->").all { char -> char.isNotBlank() } }
-            }
-
-        fun toPlantUml(graph: Graph): String {
-            val stringBuilder = StringBuilder()
-            val adjacentList = graph.dump()
-            stringBuilder.append("@startuml\n")
-            val classes =
-                (
-                    adjacentList.values
-                        .flatten()
-                        .map { it -> it.nextVertex() }
-                        .toSet() +
-                        adjacentList.keys
-                ).toList().sortedBy { it -> it.getId() }
-            classes.forEach { stringBuilder.append("class ${it.getId()}\n") }
-            for (key in adjacentList.keys) {
-                for (edge in adjacentList[key]!!) {
-                    stringBuilder.append("${key.getId()} --> ${edge.nextVertex().getId()}\n")
-                }
-            }
-            stringBuilder.append("@enduml")
-            return stringBuilder.toString()
         }
     }
 
