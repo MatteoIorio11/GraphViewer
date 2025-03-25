@@ -15,6 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import net.sourceforge.plantuml.SourceStringReader
 import org.graphviewer.core.graph.Graph
 import org.graphviewer.core.graph.GraphImpl
+import org.graphviewer.core.graph.GraphUtils
 import org.graphviewer.core.graph.VertexImpl
 import java.awt.*
 import java.awt.event.*
@@ -93,7 +94,7 @@ class GUIApp : JFrame("Graph Editor") {
                 if (e!!.keyCode == KeyEvent.VK_ENTER) {
                     generateUMLImage()
                 } else if (e.keyCode == KeyEvent.VK_BACK_SPACE) {
-                    val deferred = GraphImpl.isValidFormat(textArea.text.split("\n"))
+                    val deferred = GraphUtils.isValidFormat(textArea.text.split("\n"))
                     deferred.invokeOnCompletion {
                         if (deferred.getCompleted()) {
                             generateUMLImage()
@@ -127,7 +128,7 @@ class GUIApp : JFrame("Graph Editor") {
         }
 
         // Generate the PlantUML image
-        generatePlantUMLImage(GraphImpl.toPlantUml(graph))
+        generatePlantUMLImage(GraphUtils.toPlantUml(graph))
 
         // Refresh the UI
         vertexButtonsPanel.revalidate()
@@ -160,7 +161,7 @@ class GUIApp : JFrame("Graph Editor") {
                 button.text = "$vertexId (Enabled)"
                 graph.enableVertex(vertex)
             }
-            generatePlantUMLImage(GraphImpl.toPlantUml(graph))
+            generatePlantUMLImage(GraphUtils.toPlantUml(graph))
         }
         vertexButtons[vertexId] = button
 
