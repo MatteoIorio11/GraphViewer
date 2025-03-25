@@ -6,6 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
 object GraphUtils {
+    /**
+     *
+     */
     fun isValidFormat(lines: List<String>): Deferred<Boolean> =
         CoroutineScope(Dispatchers.IO).async {
             lines.isNotEmpty() &&
@@ -14,6 +17,9 @@ object GraphUtils {
                     .all { it.contains("->") && it.split("->").all { char -> char.isNotBlank() } }
         }
 
+    /**
+     *
+     */
     fun toPlantUml(graph: Graph): String {
         val stringBuilder = StringBuilder()
         val adjacentList = graph.dump()
@@ -22,10 +28,10 @@ object GraphUtils {
             (
                 adjacentList.values
                     .flatten()
-                    .map { it -> it.nextVertex() }
+                    .map { it.nextVertex() }
                     .toSet() +
                     adjacentList.keys
-            ).toList().sortedBy { it -> it.getId() }
+            ).toList().sortedBy { it.getId() }
         classes.forEach { stringBuilder.append("class ${it.getId()}\n") }
         for (key in adjacentList.keys) {
             for (edge in adjacentList[key]!!) {
