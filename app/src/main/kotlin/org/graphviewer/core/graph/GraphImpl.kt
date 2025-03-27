@@ -4,13 +4,16 @@ class GraphImpl : Graph {
     companion object {
         fun create(edges: List<String> = listOf()): Graph {
             val graph = GraphImpl()
-            edges.forEach { line ->
-                if (!line.contains("->")) {
-                    throw IllegalArgumentException("Invalid edge format")
+            edges
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .forEach { line ->
+                    if (!line.contains("->")) {
+                        throw IllegalArgumentException("Invalid edge format")
+                    }
+                    val (v1, v2) = line.split("->")
+                    graph.addEdge(VertexImpl(v1.trim()), VertexImpl(v2.trim()))
                 }
-                val (v1, v2) = line.split("->")
-                graph.addEdge(VertexImpl(v1.trim()), VertexImpl(v2.trim()))
-            }
             return graph
         }
     }
