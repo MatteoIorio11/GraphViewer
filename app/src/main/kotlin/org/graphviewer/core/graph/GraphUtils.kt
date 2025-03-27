@@ -7,7 +7,9 @@ import kotlinx.coroutines.async
 
 object GraphUtils {
     /**
-     *
+     * Check if the input list of lines is correctly formatted.
+     * @param lines the list of lines to check
+     * @return true if the input list is not empty and It is correctly formatted, false otherwise.
      */
     fun isValidFormat(lines: List<String>): Deferred<Boolean> =
         CoroutineScope(Dispatchers.IO).async {
@@ -18,7 +20,9 @@ object GraphUtils {
         }
 
     /**
-     *
+     * Convert the input graph to a PlantUML format.
+     * @param graph the graph to dump into plantuml format
+     * @return the graph formatted as a plantuml string.
      */
     fun toPlantUml(graph: Graph): String {
         val stringBuilder = StringBuilder()
