@@ -15,7 +15,7 @@ object GraphUtils {
         CoroutineScope(Dispatchers.IO).async {
             lines.isNotEmpty() &&
                 lines
-                    .map { it -> it.trim() }
+                    .map { it.trim() }
                     .all { it.contains("->") && it.split("->").all { char -> char.isNotBlank() } }
         }
 
