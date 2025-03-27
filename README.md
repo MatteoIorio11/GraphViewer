@@ -4,7 +4,7 @@ If you want to run the current appplication, all you need to do is to run the fo
 ```bash
 ./gradlew runGui
 ```
-This gradle task will run the application and you will be able to see the main window of it. Once the GUI has loaded you can start interacting with it.
+This gradle task will run the application, and you will be able to see the main window of it. Once the GUI has loaded you can start interacting with it.
 
 ## How to use the GUI
 The GUI is divided in different groups of components. The main groups are the following:
@@ -18,7 +18,7 @@ b->c
 b->d
 ```
 Every other format will be invalid and not accepted.
-2. **Vertexs Panel**: Once you have defined your graph and you have rendered it, you will be able to see a new component on the right side of the screen,
+2. **Vertexs Panel**: Once you have defined your graph, and you have rendered it, you will be able to see a new component on the right side of the screen,
 inside this panel, you will see a list of buttons where each button represents one of the graph's vertex. If you click on one of the buttons you will be
 able to deactivate and activate the clicked *vertex*.
 3. **Image Label**: After describing the structure of the code, the graph will be rendered on this component as an image, in this way you will be able to see It.
