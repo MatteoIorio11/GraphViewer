@@ -2,16 +2,18 @@ package org.graphviewer.core.graph
 
 class GraphImpl : Graph {
     companion object {
+        var separator: String = "->"
+
         fun create(edges: List<String> = listOf()): Graph {
             val graph = GraphImpl()
             edges
                 .map { it.trim() }
                 .filter { it.isNotEmpty() }
                 .forEach { line ->
-                    if (!line.contains("->")) {
+                    if (!line.contains(separator)) {
                         throw IllegalArgumentException("Invalid edge format")
                     }
-                    val (v1, v2) = line.split("->")
+                    val (v1, v2) = line.split(separator)
                     graph.addEdge(VertexImpl(v1.trim()), VertexImpl(v2.trim()))
                 }
             return graph

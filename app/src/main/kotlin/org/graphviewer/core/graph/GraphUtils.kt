@@ -17,7 +17,7 @@ object GraphUtils {
                 lines
                     .map { it.trim() }
                     .filter { it.isNotEmpty() }
-                    .all { it.contains("->") && it.split("->").all { char -> char.isNotBlank() } }
+                    .all { it.contains(GraphImpl.separator) && it.split(GraphImpl.separator).all { char -> char.isNotBlank() } }
         }
 
     /**
