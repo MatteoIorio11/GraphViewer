@@ -1,6 +1,6 @@
 # Graph Viewer
 ## How to run the application
-If you want to run the current appplication, all you need to do is to run the following command:
+If you want to run the current application, all you need to do is to run the following command:
 ```bash
 ./gradlew runGui
 ```
